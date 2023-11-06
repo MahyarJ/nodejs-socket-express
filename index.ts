@@ -24,6 +24,11 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("⚡️[server]: Socket id: ", socket.id);
+
+  socket.on("do-some", (value, callback) => {
+    console.log("⚡️[server > do-some]: ", value);
+    callback(`⚡️[server > do-some]: got > ${value}`);
+  });
 });
 
 app.get("/", (req: Request, res: Response) => {
