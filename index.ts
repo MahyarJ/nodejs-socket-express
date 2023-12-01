@@ -1,13 +1,19 @@
 import express, { Express, Request, Response } from "express";
+import cors from "cors";
 
 import { createServer } from "http";
 import { Server } from "socket.io";
 
 import dotenv from "dotenv";
 
+import { sensors } from "./defaults";
+
 dotenv.config();
 
 const app: Express = express();
+// Opens up CORS for all origins
+app.use(cors());
+
 const httpServer = createServer(app);
 const port = process.env.PORT;
 
@@ -29,6 +35,16 @@ io.on("connection", (socket) => {
     console.log("⚡️[server > do-some]: ", value);
     callback(`⚡️[server > do-some]: got > ${value}`);
   });
+
+  socket.on("get-sensors", (callback) => {
+    console.log("⚡️[server > get-sensors]");
+    callback(sensors);
+  });
+});
+
+app.get("/sensors", (req: Request, res: Response) => {
+  console.log("⚡️[server > /sensors]");
+  res.send(sensors);
 });
 
 app.get("/", (req: Request, res: Response) => {
