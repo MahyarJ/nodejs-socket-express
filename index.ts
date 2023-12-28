@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
 
   socket.on("do-some", (value, callback) => {
     console.log("⚡️[server > do-some]: ", value);
-    callback(`⚡️[server > do-some]: got > ${value}`);
+    callback({ endpoint: "do-some", value });
   });
 
   socket.on("get-sensors", (callback) => {
