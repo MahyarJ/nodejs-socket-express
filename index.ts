@@ -1,12 +1,10 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
-
 import { createServer } from "http";
 import { Server } from "socket.io";
-
 import dotenv from "dotenv";
 
-import { sensors } from "./defaults";
+import generateSensors, { Sensor } from "./generateSensors";
 
 dotenv.config();
 
@@ -28,12 +26,20 @@ const io = new Server(httpServer, {
   },
 });
 
+let sensors: Sensor[] = [];
+
 io.on("connection", (socket) => {
   console.log("⚡️[server]: Socket id: ", socket.id);
 
-  socket.on("do-some", (value, callback) => {
-    console.log("⚡️[server > do-some]: ", value);
-    callback({ endpoint: "do-some", value });
+  socket.on("set-sensors", (value, callback) => {
+    console.log("⚡️[server > set-sensors]: ", value);
+    sensors = generateSensors(value);
+    console.log(
+      "Default values: ",
+      sensors.map((sensor) => sensor.value).toString()
+    );
+
+    callback({ endpoint: "set-sensors", value });
   });
 
   socket.on("get-sensors", (callback) => {
