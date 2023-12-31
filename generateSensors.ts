@@ -1,13 +1,13 @@
 export type Sensor = {
+  index: number;
   id: number;
-  value: number;
 };
 
 const generateSensors = (length: number): Sensor[] => {
   return Array.from({ length }, (_, i) => {
     return {
-      id: i,
-      value: Math.floor(Math.random() * 100),
+      index: i,
+      id: Math.floor(Math.random() * 100),
     };
   });
 };

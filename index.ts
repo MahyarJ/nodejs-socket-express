@@ -28,6 +28,15 @@ const io = new Server(httpServer, {
 
 let sensors: Sensor[] = [];
 
+const setSensorValues = () => {
+  setInterval(() => {
+    sensors.forEach(({ id }) => {
+      const randomValue = Math.round(Math.random() * 100 * 100) / 100;
+      io.emit(`sensor-${id}`, { id, value: randomValue });
+    });
+  }, 1000);
+};
+
 io.on("connection", (socket) => {
   console.log("⚡️[server]: Socket id: ", socket.id);
 
@@ -36,12 +45,13 @@ io.on("connection", (socket) => {
     sensors = generateSensors(value);
     console.log(
       "Default values: ",
-      sensors.map((sensor) => sensor.value).toString()
+      sensors.map((sensor) => sensor.id).toString()
     );
 
     callback({ endpoint: "set-sensors", value });
   });
 
+  setSensorValues();
   socket.on("get-sensors", (callback) => {
     console.log("⚡️[server > get-sensors]");
     callback(sensors);
